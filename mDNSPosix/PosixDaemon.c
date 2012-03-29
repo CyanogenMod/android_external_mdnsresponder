@@ -49,6 +49,14 @@ extern int daemon(int, int);
 #include "uds_daemon.h"
 #include "PlatformCommon.h"
 
+#ifndef MDNS_USERNAME
+#define MDNS_USERNAME "nobody"
+#endif
+
+#ifdef __ANDROID__
+#include <cutils/sockets.h>
+#endif
+
 #define CONFIG_FILE "/etc/mdnsd.conf"
 static domainname DynDNSZone;                // Default wide-area zone for service registration
 static domainname DynDNSHostname;
@@ -106,7 +114,7 @@ mDNSlocal void ParseCmdLinArgs(int argc, char **argv)
 		if (0 == strcmp(argv[1], "-debug")) mDNS_DebugMode = mDNStrue;
 		else printf("Usage: %s [-debug]\n", argv[0]);
 		}
-
+#ifndef __ANDROID__
 	if (!mDNS_DebugMode)
 		{
 		int result = daemon(0, 0);
@@ -116,6 +124,7 @@ mDNSlocal void ParseCmdLinArgs(int argc, char **argv)
 		exit(-1);
 #endif
 		}
+#endif // !__ANDROID__
 	}
 
 mDNSlocal void DumpStateLog(mDNS *const m)
@@ -180,18 +189,33 @@ int main(int argc, char **argv)
 					mDNS_StatusCallback, mDNS_Init_NoInitCallbackContext); 
 
 	if (mStatus_NoError == err)
+#ifdef __ANDROID__
+		{
+		dnssd_sock_t s[1];
+		char *socketname = strrchr(MDNS_UDS_SERVERPATH, '/');
+		if (socketname)
+			{
+			socketname++; // skip '/'
+			s[0] = android_get_control_socket(socketname);
+			err = udsserver_init(s, 1);
+			} else {
+			err = udsserver_init(mDNSNULL, 0);
+			}
+		}
+#else
 		err = udsserver_init(mDNSNULL, 0);
+#endif // __ANDROID__
 		
 	Reconfigure(&mDNSStorage);
 
 	// Now that we're finished with anything privileged, switch over to running as "nobody"
 	if (mStatus_NoError == err)
 		{
-		const struct passwd *pw = getpwnam("nobody");
+		const struct passwd *pw = getpwnam(MDNS_USERNAME);
 		if (pw != NULL)
 			setuid(pw->pw_uid);
 		else
-			LogMsg("WARNING: mdnsd continuing as root because user \"nobody\" does not exist");
+			LogMsg("WARNING: mdnsd continuing as root because user \"%s\" does not exist", MDNS_USERNAME);
 		}
 
 	if (mStatus_NoError == err)

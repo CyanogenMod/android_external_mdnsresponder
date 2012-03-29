@@ -39,7 +39,9 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
-#include <syslog.h>
+#ifndef __ANDROID__
+  #include <syslog.h>
+#endif
 #include <stdarg.h>
 #include <fcntl.h>
 #include <sys/types.h>
@@ -665,7 +667,6 @@ mDNSlocal int SetupSocket(struct sockaddr *intfAddr, mDNSIPPort port, int interf
 			// We no longer depend on being able to get the received TTL, so don't worry if the option fails
 			}
 	#endif
-
 		// Add multicast group membership on this interface
 		if (err == 0 && JoinMulticastGroup)
 			{
@@ -1157,7 +1158,7 @@ mDNSlocal void InterfaceChangeCallback(int fd, short filter, void *context)
 
 	FD_ZERO(&readFDs);
 	FD_SET(pChgRec->NotifySD, &readFDs);
-	
+
 	do
 	{
 		changedInterfaces |= ProcessRoutingNotification(pChgRec->NotifySD);

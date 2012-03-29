@@ -37,10 +37,11 @@
 
 #include "mDNSEmbeddedAPI.h"
 
-mDNSexport int mDNS_LoggingEnabled = 0;
+// TODO - turn off debugging
+mDNSexport int mDNS_LoggingEnabled = 1;
 mDNSexport int mDNS_PacketLoggingEnabled = 0;
 
-#if MDNS_DEBUGMSGS
+#if MDNS_DEBUGMSGS && !defined(__ANDROID__)
 mDNSexport int mDNS_DebugMode = mDNStrue;
 #else
 mDNSexport int mDNS_DebugMode = mDNSfalse;

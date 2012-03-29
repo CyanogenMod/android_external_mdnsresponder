@@ -20,6 +20,9 @@
 
 #include <signal.h>
 #include <sys/time.h>
+#ifdef __ANDROID__
+#include <sys/select.h>
+#endif
 
 #ifdef  __cplusplus
     extern "C" {

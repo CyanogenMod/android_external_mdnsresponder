@@ -683,8 +683,8 @@ int daemon(int nochdir, int noclose)
 	switch (fork())
 		{
 		case -1: return (-1);	// Fork failed
-		case 0:  break;			// Child -- continue
-		default: _exit(0);		// Parent -- exit
+		case 0: break;		// Child -- continue
+		default: _exit(0);	// Parent -- exit
 		}
 
 	if (setsid() == -1) return(-1);

@@ -27,6 +27,10 @@
 #include <sys/resource.h>
 #endif
 
+#ifdef __ANDROID__
+#include <cutils/sockets.h>
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 

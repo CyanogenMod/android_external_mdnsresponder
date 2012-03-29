@@ -73,8 +73,12 @@ static int gDaemonErr = kDNSServiceErr_NoError;
 		WSASetLastError( err );
 		}
 #else
-
+#ifndef __ANDROID__
 	#include <sys/fcntl.h>		// For O_RDWR etc.
+#else
+	#include <fcntl.h>
+	#define LOG_TAG "libmdnsd"
+#endif
 	#include <sys/time.h>
 	#include <sys/socket.h>
 	#include <syslog.h>

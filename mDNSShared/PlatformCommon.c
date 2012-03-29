@@ -27,6 +27,10 @@
 #include "DNSCommon.h"
 #include "PlatformCommon.h"
 
+#ifdef __ANDROID__
+#include <android/log.h>
+#endif
+
 #ifdef NOT_HAVE_SOCKLEN_T
     typedef unsigned int socklen_t;
 #endif
@@ -143,8 +147,12 @@ mDNSexport void ReadDDNSSettingsFromConfFile(mDNS *const m, const char *const fi
 #if MDNS_DEBUGMSGS
 mDNSexport void mDNSPlatformWriteDebugMsg(const char *msg)
 	{
+#ifdef __ANDROID__
+	__android_log_print(ANDROID_LOG_DEBUG, "mdns", "%s", msg);
+#else
 	fprintf(stderr,"%s\n", msg);
 	fflush(stderr);
+#endif
 	}
 #endif
 
@@ -191,6 +199,18 @@ mDNSexport void mDNSPlatformWriteLogMsg(const char *ident, const char *buffer, m
 			syslog(syslog_level, "%8d.%03d: %s", (int)(t/1000), ms, buffer);
 		else
 #endif
+#ifdef __ANDROID__
+		switch (loglevel)
+			{
+//			case MDNS_LOG_OPERATION: syslog_level = ANDROID_LOG_WARN;   break;
+//			case MDNS_LOG_SPS:
+//			case MDNS_LOG_DEBUG:     syslog_level = ANDROID_LOG_DEBUG;  break;
+//			case MDNS_LOG_INFO:      syslog_level = ANDROID_LOG_INFO;   break;
+			default:                 syslog_level = ANDROID_LOG_ERROR;  break;
+			}
+		__android_log_print(syslog_level, "mdns", "%s", buffer);
+#else
 			syslog(syslog_level, "%s", buffer);
+#endif
 		}
 	}
