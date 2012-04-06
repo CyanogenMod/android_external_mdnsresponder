@@ -1967,6 +1967,24 @@ DNSServiceErrorType DNSSD_API DNSServiceNATPortMappingCreate
     );
 
 
+typedef void (DNSSD_API *DNSHostnameChangedReply)
+    (
+    DNSServiceRef                    sdRef,
+    DNSServiceFlags                  flags,
+    DNSServiceErrorType              errorCode,
+    const char                       *hostname,
+    void                             *context
+    );
+
+DNSServiceErrorType DNSSD_API DNSSetHostname
+    (
+    DNSServiceRef            *sdRef,
+    DNSServiceFlags          flags,
+    const char               *hostname,
+    DNSHostnameChangedReply  callBack,
+    void                     *context
+    );
+
 /*********************************************************************************************
  *
  *  General Utility Functions

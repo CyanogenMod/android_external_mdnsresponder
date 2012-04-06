@@ -139,7 +139,7 @@ typedef enum
     port_mapping_request,	// New in Leopard and B4W 2.0
 	addrinfo_request,
 	send_bpf,				// New in SL
-
+    sethost_request,
 	cancel_request = 63
     } request_op_t;
 
@@ -153,7 +153,8 @@ typedef enum
     reg_record_reply_op,	// Up to here is in Tiger and B4W 1.0.3
     getproperty_reply_op,	// New in B4W 1.0.4
     port_mapping_reply_op,	// New in Leopard and B4W 2.0
-	addrinfo_reply_op
+	addrinfo_reply_op,
+    sethost_reply,
     } reply_op_t;
 
 #if defined(_WIN64)

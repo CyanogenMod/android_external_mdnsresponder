@@ -202,11 +202,15 @@ mDNSexport void mDNSPlatformWriteLogMsg(const char *ident, const char *buffer, m
 #ifdef __ANDROID__
 		switch (loglevel)
 			{
-//			case MDNS_LOG_OPERATION: syslog_level = ANDROID_LOG_WARN;   break;
-//			case MDNS_LOG_SPS:
-//			case MDNS_LOG_DEBUG:     syslog_level = ANDROID_LOG_DEBUG;  break;
-//			case MDNS_LOG_INFO:      syslog_level = ANDROID_LOG_INFO;   break;
+			case MDNS_LOG_DEBUG:     syslog_level = ANDROID_LOG_DEBUG;  break;
+#if MDNS_DEBUGMSGS > 0
+			case MDNS_LOG_OPERATION: syslog_level = ANDROID_LOG_WARN;   break;
+			case MDNS_LOG_SPS:       syslog_level = ANDROID_LOG_DEBUG;  break;
+			case MDNS_LOG_INFO:      syslog_level = ANDROID_LOG_INFO;   break;
 			default:                 syslog_level = ANDROID_LOG_ERROR;  break;
+#else
+			default:		return;
+#endif
 			}
 		__android_log_print(syslog_level, "mdns", "%s", buffer);
 #else

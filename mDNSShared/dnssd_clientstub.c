@@ -841,6 +841,9 @@ static void CallbackWithError(DNSServiceRef sdRef, DNSServiceErrorType error)
 			case enumeration_request:
 				if (sdr->AppCallback)((DNSServiceDomainEnumReply) sdr->AppCallback)(sdr, 0, 0, error, NULL,                   sdr->AppContext);
 				break;
+			case sethost_request:
+				if (sdr->AppCallback)((DNSServiceSetHostReply)    sdr->AppCallback)(sdr, 0,    error, NULL,                   sdr->AppContext);
+				break;
 			case connection_request:
 				// This means Register Record, walk the list of DNSRecords to do the callback
 				rec = sdr->rec;
@@ -1375,6 +1378,43 @@ DNSServiceErrorType DNSSD_API DNSServiceBrowse
 	put_string(regtype, &ptr);
 	put_string(domain, &ptr);
 
+	err = deliver_request(hdr, *sdRef);		// Will free hdr for us
+	if (err) { DNSServiceRefDeallocate(*sdRef); *sdRef = NULL; }
+	return err;
+	}
+
+static void handle_hostname_changed_response(DNSServiceOp *const sdr, const CallbackHeader *const cbh, const char *data, const char *const end)
+	{
+	char replyHostname[256];
+
+	get_string(&data, end, replyHostname, sizeof(replyHostname));
+	if (!data) syslog(LOG_WARNING, "dnssd_clientstub handle_hsotname_changed_response: error reading result from daemon");
+	else ((DNSHostnameChangedReply)sdr->AppCallback)(sdr, cbh->cb_flags, cbh->cb_err, replyHostname, sdr->AppContext);
+	// MUST NOT touch sdr after invoking AppCallback -- client is allowed to dispose it from within callback function
+	}
+
+DNSServiceErrorType DNSSD_API DNSSetHostname
+	(
+	DNSServiceRef           *sdRef,
+	DNSServiceFlags          flags,
+	const char              *hostname,
+	DNSHostnameChangedReply  callBack,
+	void                    *context
+	)
+	{
+	char *ptr;
+	size_t len;
+	ipc_msg_hdr *hdr;
+	DNSServiceErrorType err = ConnectToServer(sdRef, flags, sethost_request, handle_hostname_changed_response, callBack, context);
+	if (err) return err;
+	len = sizeof(flags);
+	len += strlen(hostname) + 1;
+
+	hdr = create_hdr(sethost_request, &len, &ptr, (*sdRef)->primary ? 1 : 0, *sdRef);
+	if (!hdr) { DNSServiceRefDeallocate(*sdRef); *sdRef = NULL; return kDNSServiceErr_NoMemory; }
+
+	put_flags(flags, &ptr);
+	put_string(hostname, &ptr);
 	err = deliver_request(hdr, *sdRef);		// Will free hdr for us
 	if (err) { DNSServiceRefDeallocate(*sdRef); *sdRef = NULL; }
 	return err;

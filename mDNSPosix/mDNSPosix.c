@@ -475,7 +475,12 @@ mDNSexport void mDNSPlatformDynDNSHostNameStatusChanged(const domainname *const 
 mDNSlocal void GetUserSpecifiedRFC1034ComputerName(domainlabel *const namelabel)
 	{
 	int len = 0;
+#ifndef __ANDROID__
 	gethostname((char *)(&namelabel->c[1]), MAX_DOMAIN_LABEL);
+#else
+	// use an appropriate default label rather than the linux default of 'localhost'
+	strncpy(&namelabel->c[1], "Android", MAX_DOMAIN_LABEL);
+#endif
 	while (len < MAX_DOMAIN_LABEL && namelabel->c[len+1] && namelabel->c[len+1] != '.') len++;
 	namelabel->c[0] = len;
 	}
