@@ -1388,7 +1388,7 @@ static void handle_hostname_changed_response(DNSServiceOp *const sdr, const Call
 	char replyHostname[256];
 
 	get_string(&data, end, replyHostname, sizeof(replyHostname));
-	if (!data) syslog(LOG_WARNING, "dnssd_clientstub handle_hsotname_changed_response: error reading result from daemon");
+	if (!data) syslog(LOG_WARNING, "dnssd_clientstub handle_hostname_changed_response: error reading result from daemon");
 	else ((DNSHostnameChangedReply)sdr->AppCallback)(sdr, cbh->cb_flags, cbh->cb_err, replyHostname, sdr->AppContext);
 	// MUST NOT touch sdr after invoking AppCallback -- client is allowed to dispose it from within callback function
 	}
