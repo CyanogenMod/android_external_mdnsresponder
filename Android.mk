@@ -24,7 +24,8 @@ LOCAL_C_INCLUDES := external/mdnsresponder/mDNSPosix \
                     external/mdnsresponder/mDNSShared
 
 LOCAL_CFLAGS := -O2 -g -W -Wall -D__ANDROID__ -D_GNU_SOURCE -DHAVE_IPV6 -DNOT_HAVE_SA_LEN -DUSES_NETLINK -DTARGET_OS_LINUX -fno-strict-aliasing -DHAVE_LINUX -DMDNS_DEBUGMSGS=0 -DMDNS_UDS_SERVERPATH=\"/dev/socket/mdnsd\" -DMDNS_USERNAME=\"mdnsr\" -DPLATFORM_NO_RLIMIT
-LOCAL_SYSTEM_SHARED_LIBRARIES := libc libcutils
+LOCAL_SYSTEM_SHARED_LIBRARIES := libc
+LOCAL_SHARED_LIBRARIES := libcutils liblog
 
 include $(BUILD_EXECUTABLE)
 
@@ -39,7 +40,8 @@ LOCAL_MODULE := libmdnssd
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_CFLAGS := -O2 -g -W -Wall -D__ANDROID__ -D_GNU_SOURCE -DHAVE_IPV6 -DNOT_HAVE_SA_LEN -DUSES_NETLINK -DTARGET_OS_LINUX -fno-strict-aliasing -DHAVE_LINUX -DMDNS_UDS_SERVERPATH=\"/dev/socket/mdnsd\" -DMDNS_DEBUGMSGS=0
-LOCAL_SYSTEM_SHARED_LIBRARIES := libc libcutils
+LOCAL_SYSTEM_SHARED_LIBRARIES := libc
+LOCAL_SHARED_LIBRARIES := libcutils liblog
 
 include $(BUILD_SHARED_LIBRARY)
 
@@ -56,6 +58,7 @@ LOCAL_C_INCLUDES := external/mdnsresponder/mDNSShared
 
 LOCAL_CFLAGS := -O2 -g -W -Wall -D__ANDROID__ -D_GNU_SOURCE -DHAVE_IPV6 -DNOT_HAVE_SA_LEN -DUSES_NETLINK -DTARGET_OS_LINUX -fno-strict-aliasing -DHAVE_LINUX -DMDNS_UDS_SERVERPATH=\"/dev/socket/mdnsd\" -DMDNS_DEBUGMSGS=0
 
-LOCAL_SYSTEM_SHARED_LIBRARIES := libmdnssd libc libcutils
+LOCAL_SYSTEM_SHARED_LIBRARIES := libc
+LOCAL_SHARED_LIBRARIES := libmdnssd libcutils liblog
 
 include $(BUILD_EXECUTABLE)
