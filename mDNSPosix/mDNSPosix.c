@@ -65,6 +65,11 @@
 #include "mDNSUNP.h"
 #include "GenLinkedList.h"
 
+// Disallow SO_REUSEPORT on Android because we use >3.9 kernel headers to build binaries targeted to 3.4.x.
+#ifdef __ANDROID__
+#undef SO_REUSEPORT
+#endif
+
 // ***************************************************************************
 // Structures
 
