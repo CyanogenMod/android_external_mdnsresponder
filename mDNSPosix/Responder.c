@@ -603,7 +603,11 @@ static mStatus RegisterServicesInFile(const char *filePath)
 		status = mStatus_UnknownErr;
 	}
     
-	assert(0 == fclose(fp));
+	{
+// __ANDROID__ : replaced assert(fclose(..))
+		int fp_closed = fclose(fp);
+		assert(0 == fp_closed);
+	}
     
 	return status;
 }
