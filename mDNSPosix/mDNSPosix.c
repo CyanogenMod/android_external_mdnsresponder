@@ -70,6 +70,8 @@
 #undef SO_REUSEPORT
 #endif
 
+// __ANDROID__ : replaced assert(close(..)) at several points in this file.
+
 // ***************************************************************************
 // Structures
 
@@ -582,9 +584,17 @@ mDNSlocal void FreePosixNetworkInterface(PosixNetworkInterface *intf)
 	{
 	assert(intf != NULL);
 	if (intf->intfName != NULL)        free((void *)intf->intfName);
-	if (intf->multicastSocket4 != -1) assert(close(intf->multicastSocket4) == 0);
+	if (intf->multicastSocket4 != -1)
+		{
+		int ipv4_closed = close(intf->multicastSocket4);
+		assert(ipv4_closed == 0);
+		}
 #if HAVE_IPV6
-	if (intf->multicastSocket6 != -1) assert(close(intf->multicastSocket6) == 0);
+	if (intf->multicastSocket6 != -1)
+		{
+		int ipv6_closed = close(intf->multicastSocket6);
+		assert(ipv6_closed == 0);
+		}
 #endif
 	free(intf);
 	}
@@ -822,7 +832,12 @@ mDNSlocal int SetupSocket(struct sockaddr *intfAddr, mDNSIPPort port, int interf
 		}
 
 	// Clean up
-	if (err != 0 && *sktPtr != -1) { assert(close(*sktPtr) == 0); *sktPtr = -1; }
+	if (err != 0 && *sktPtr != -1)
+		{
+		int sktClosed = close(*sktPtr);
+		assert(sktClosed == 0);
+		*sktPtr = -1;
+		}
 	assert((err == 0) == (*sktPtr != -1));
 	return err;
 	}
@@ -1284,9 +1299,17 @@ mDNSexport void mDNSPlatformClose(mDNS *const m)
 	{
 	assert(m != NULL);
 	ClearInterfaceList(m);
-	if (m->p->unicastSocket4 != -1) assert(close(m->p->unicastSocket4) == 0);
+	if (m->p->unicastSocket4 != -1)
+		{
+		int ipv4_closed = close(m->p->unicastSocket4);
+		assert(ipv4_closed == 0);
+		}
 #if HAVE_IPV6
-	if (m->p->unicastSocket6 != -1) assert(close(m->p->unicastSocket6) == 0);
+	if (m->p->unicastSocket6 != -1)
+		{
+		int ipv6_closed = close(m->p->unicastSocket6);
+		assert(ipv6_closed == 0);
+		}
 #endif
 	}
 
