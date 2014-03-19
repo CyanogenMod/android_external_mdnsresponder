@@ -205,7 +205,9 @@ struct ifi_info *get_ifi_info_linuxv6(int family, int doaliases)
 		}
 	done:
 	if (sockfd != -1) {
-		assert(close(sockfd) == 0);
+// __ANDROID__ : replaced assert(close(..))
+		int sockfd_closed = close(sockfd);
+		assert(sockfd_closed == 0);
 	}
 	return(ifihead);    /* pointer to first structure in linked list */
 	}
