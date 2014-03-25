@@ -523,7 +523,10 @@ mDNSexport int ParseDNSServers(mDNS *m, const char *filePath)
 			mDNS_AddDNSServer(m, NULL, mDNSInterface_Any, &DNSAddr, UnicastDNSPort, mDNSfalse, 0);
 			numOfServers++;
 			}
-		}  
+		}
+    //  __ANDROID__ : if fp was opened, it needs to be closed
+	int fp_closed = fclose(fp);
+	assert(fp_closed == 0);
 	return (numOfServers > 0) ? 0 : -1;
 	}
 
