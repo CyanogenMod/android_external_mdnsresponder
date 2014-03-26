@@ -83,7 +83,7 @@ void plen_to_mask(int plen, char *addr) {
 struct ifi_info *get_ifi_info_linuxv6(int family, int doaliases)
 	{
 		struct ifi_info *ifi, *ifihead, **ifipnext, *ifipold, **ifiptr;
-	FILE *fp;
+	FILE *fp = NULL;
 	char addr[8][5];
 	int flags, myflags, index, plen, scope;
 	char ifname[9], lastname[IFNAMSIZ];
@@ -208,7 +208,12 @@ struct ifi_info *get_ifi_info_linuxv6(int family, int doaliases)
 // __ANDROID__ : replaced assert(close(..))
 		int sockfd_closed = close(sockfd);
 		assert(sockfd_closed == 0);
-	}
+		}
+// __ANDROID__ : if fp was opened, it needs to be closed
+	if (fp != NULL) {
+		int fd_closed = fclose(fp);
+		assert(fd_closed == 0);
+		}
 	return(ifihead);    /* pointer to first structure in linked list */
 	}
 #endif // defined(AF_INET6) && HAVE_IPV6 && HAVE_LINUX
