@@ -28,7 +28,6 @@ commonFlags := \
     -Wno-unused \
     -Wno-unused-but-set-variable \
     -Wno-unused-parameter \
-    -Werror \
     -Werror=implicit-function-declaration \
 
 #########################
