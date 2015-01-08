@@ -11420,6 +11420,9 @@ mDNSexport void mDNS_StartExit(mDNS *const m)
 	for (rr = m->DuplicateRecords; rr; rr = rr->next)
 		LogMsg("mDNS_StartExit: Should not still have Duplicate Records remaining: %02X %s", rr->resrec.RecordType, ARDisplayString(m, rr));
 
+	// Send responses to flush any pending deregistrations
+	SendResponses(m);
+
 	// If any deregistering records remain, send their deregistration announcements before we exit
 	if (m->mDNSPlatformStatus != mStatus_NoError) DiscardDeregistrations(m);
 
