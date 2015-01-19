@@ -83,7 +83,7 @@ include $(BUILD_EXECUTABLE)
 
 
 ############################
-# This builds an mDns that is embeddable within GmsCore for the local apps connection API
+# This builds an mDns that is embeddable within GmsCore for the nearby connections API
 
 ### STATIC LIB ###
 include $(CLEAR_VARS)
@@ -116,7 +116,7 @@ LOCAL_CFLAGS += -D_GNU_SOURCE \
                 -DTARGET_OS_LINUX \
                 -fno-strict-aliasing \
                 -DHAVE_LINUX \
-                -DMDNS_DEBUGMSGS=1 \
+                -DMDNS_DEBUGMSGS=0 \
                 -DMDNS_UDS_SERVERPATH=\"/dev/socket/mdnsd\" \
                 -DMDNS_USERNAME=\"mdnsr\" \
                 -DPLATFORM_NO_RLIMIT \
