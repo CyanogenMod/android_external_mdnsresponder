@@ -92,7 +92,7 @@ LOCAL_SHARED_LIBRARIES := libmdnssd libcutils liblog
 include $(BUILD_EXECUTABLE)
 
 ############################
-# This builds an mDns that is embeddable within GmsCore for the local apps connection API
+# This builds an mDns that is embeddable within GmsCore for the nearby connections API
 
 ### STATIC LIB ###
 include $(CLEAR_VARS)
@@ -119,7 +119,7 @@ LOCAL_C_INCLUDES := external/mdnsresponder/mDNSPosix \
 LOCAL_CFLAGS += -Os -fvisibility=hidden
 LOCAL_CFLAGS += $(commonFlags) \
                 -UMDNS_DEBUGMSGS \
-                -DMDNS_DEBUGMSGS=1 \
+                -DMDNS_DEBUGMSGS=0 \
                 -DSO_REUSEADDR \
                 -DUNICAST_DISABLED
 
