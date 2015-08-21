@@ -64,6 +64,7 @@ LOCAL_CFLAGS := $(commonFlags)
 
 LOCAL_STATIC_LIBRARIES := $(commonLibs) libc
 LOCAL_FORCE_STATIC_EXECUTABLE := true
+LOCAL_INIT_RC := mdnsd.rc
 include $(BUILD_EXECUTABLE)
 
 ##########################
