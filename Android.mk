@@ -53,7 +53,7 @@ LOCAL_C_INCLUDES := external/mdnsresponder/mDNSPosix \
                     external/mdnsresponder/mDNSCore  \
                     external/mdnsresponder/mDNSShared
 
-LOCAL_CFLAGS := $(commonFlags)
+LOCAL_CFLAGS := $(commonFlags) -DMDNS_VERSIONSTR_NODTS=1
 
 LOCAL_STATIC_LIBRARIES := $(commonLibs) libc
 LOCAL_FORCE_STATIC_EXECUTABLE := true
